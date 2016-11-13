@@ -45,18 +45,36 @@ func Mul(c float64, v *Vec) *Vec {
 	}
 }
 
+func Scale(v1, v2 *Vec) *Vec {
+	return &Vec{
+		v1.X * v2.X,
+		v1.Y * v2.Y,
+		v1.Z * v2.Z,
+		1,
+	}
+}
+
 func Dot(v1, v2 *Vec) float64 {
 	return (v1.X*v2.X + v1.Y*v2.Y + v1.Z*v2.Z)
 }
 
 func Norm(v *Vec) *Vec {
-	abs := math.Sqrt(math.Pow(v.X, 2) + math.Pow(v.Y, 2) + math.Pow(v.Z, 2))
+	abs := v.Mod()
 	return &Vec{
 		v.X / abs,
 		v.Y / abs,
 		v.Z / abs,
 		1,
 	}
+}
+
+func Mod(v *Vec) float64 {
+	return math.Sqrt(math.Pow(v.X, 2) + math.Pow(v.Y, 2) + math.Pow(v.Z, 2))
+}
+
+func Reflect(v *Vec, n1 *Vec) *Vec {
+	n := n1.Norm()
+	return v.Sub(n.Mul(2 * v.Dot(n)))
 }
 
 // For convenience, provide methods on *Vec.
@@ -79,10 +97,22 @@ func (v *Vec) Mul(c float64) *Vec {
 	return Mul(c, v)
 }
 
+func (v1 *Vec) Scale(v2 *Vec) *Vec {
+	return Scale(v1, v2)
+}
+
 func (v1 *Vec) Dot(v2 *Vec) float64 {
 	return Dot(v1, v2)
 }
 
 func (v *Vec) Norm() *Vec {
 	return Norm(v)
+}
+
+func (v *Vec) Mod() float64 {
+	return Mod(v)
+}
+
+func (v *Vec) Reflect(n *Vec) *Vec {
+	return Reflect(v, n)
 }

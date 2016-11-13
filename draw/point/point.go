@@ -1,5 +1,7 @@
 package point
 
+import "math"
+
 type Point struct {
 	X float64
 	Y float64
@@ -30,6 +32,10 @@ func Sub(p1, p2 *Point) *Point {
 	return Add(p1, Negate(p2))
 }
 
+func Distance(p *Point) float64 {
+	return math.Sqrt(math.Pow(p.X, 2) + math.Pow(p.Y, 2) + math.Pow(p.Z, 2))
+}
+
 // For convenience.
 
 func (p1 *Point) Add(p2 *Point) *Point {
@@ -42,4 +48,8 @@ func (p *Point) Negate() *Point {
 
 func (p1 *Point) Sub(p2 *Point) *Point {
 	return Sub(p1, p2)
+}
+
+func (p *Point) Distance() float64 {
+	return Distance(p)
 }
