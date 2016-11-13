@@ -20,12 +20,16 @@ func main() {
 		sphere.New(point.New(-0.1, 0.8, 3), 0.1, 0.9, 1.0, 30, color.NRGBA{0, 0, 255, 255}),
 	}, []*light.PointLight{
 		light.New(point.New(5, 8, -5), color.NRGBA{255, 255, 255, 255}, 2.0),
-		light.New(point.New(-5, -3, -5), color.NRGBA{255, 255, 255, 255}, 0.9),
+		light.New(point.New(-5, -3, -5), color.NRGBA{255, 255, 255, 255}, 1.1),
 	}}
 	r := &renderer.Renderer{640, 480}
 	im := r.Render(sc)
 
-	f, err := os.Create("/Users/jacobfenton/bla1.jpeg")
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	f, err := os.Create(wd + "/test.jpeg")
 	if err != nil {
 		panic(err)
 	}
