@@ -17,7 +17,8 @@ type Shape interface {
 }
 
 type LineIntersection struct {
-	S Shape
-	P *point.Point // point of intersection
-	N *vec.Vec     // normal at that point
+	S    Shape
+	P    *point.Point // point of intersection
+	N    *vec.Vec     // normal at that point
+	Dist float64      // what we had to multiply the direction vector by - if negative, know the thing is behind us
 }

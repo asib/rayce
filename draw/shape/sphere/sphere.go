@@ -52,6 +52,7 @@ func (s *Sphere) Intersect(l *line.Line) *shape.LineIntersection {
 			s,
 			p,
 			s.NormalAt(p),
+			s1,
 		}
 	} else if s2 > 0 && s2 < s1 {
 		p := l.P.Add(draw.ToPoint(l.Direction.Mul(s2)))
@@ -59,6 +60,7 @@ func (s *Sphere) Intersect(l *line.Line) *shape.LineIntersection {
 			s,
 			p,
 			s.NormalAt(p),
+			s2,
 		}
 	}
 

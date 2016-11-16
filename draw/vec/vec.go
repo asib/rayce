@@ -1,6 +1,9 @@
 package vec
 
-import "math"
+import (
+	"image/color"
+	"math"
+)
 
 type Vec struct {
 	X float64
@@ -11,6 +14,10 @@ type Vec struct {
 
 func New(x, y, z float64) *Vec {
 	return &Vec{x, y, z, 1}
+}
+
+func FromCol(c color.NRGBA) *Vec {
+	return &Vec{float64(c.R), float64(c.G), float64(c.B), 255}
 }
 
 func Zero() *Vec {
@@ -77,6 +84,15 @@ func Reflect(v *Vec, n1 *Vec) *Vec {
 	return v.Sub(n.Mul(2 * v.Dot(n)))
 }
 
+func Cross(v1 *Vec, v2 *Vec) *Vec {
+	return &Vec{
+		v1.Y*v2.Z - v1.Z*v2.Y,
+		v1.Z*v2.X - v1.X*v2.Z,
+		v1.X*v2.Y - v1.Y*v2.X,
+		1,
+	}
+}
+
 // For convenience, provide methods on *Vec.
 // None of these actually do any mutation.
 
@@ -115,4 +131,8 @@ func (v *Vec) Mod() float64 {
 
 func (v *Vec) Reflect(n *Vec) *Vec {
 	return Reflect(v, n)
+}
+
+func (v *Vec) Cross(v1 *Vec) *Vec {
+	return Cross(v, v1)
 }
