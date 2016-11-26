@@ -34,15 +34,18 @@ func New(width, height int) *Camera {
 func (c *Camera) CastRay(x, y int) []*line.Line {
 	xPos := (c.WidthStep-c.WidthWld)/2 + float64(x)*c.WidthStep
 	yPos := (c.HeightStep+c.HeightWld)/2 - float64(y)*c.HeightStep
+	lines := make([]*line.Line, 0)
 
-	lines := []*line.Line{line.New(point.Zero(), vec.New(xPos, yPos, 1).Norm())}
-	return lines
+	/*
+	 *lines := []*line.Line{line.New(point.Zero(), vec.New(xPos, yPos, 1).Norm())}
+	 *return lines
+	 */
 
 	for i := -1; i <= 1; i++ {
 		for j := -1; j <= 1; j++ {
 			lines = append(lines,
 				line.New(point.Zero(),
-					vec.New(xPos+(float64(i)*c.WidthStep/1), yPos+(float64(j)*c.HeightStep/1), 1).Norm()))
+					vec.New(xPos+(float64(i)*c.WidthStep/2), yPos+(float64(j)*c.HeightStep/2), 1).Norm()))
 		}
 	}
 

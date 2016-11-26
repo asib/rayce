@@ -29,8 +29,9 @@ func (r *Renderer) Trace(sc *scene.Scene, depth int, l *line.Line) color.NRGBA {
 	col := r.Illuminate(sc, depth, closest.S, closest.P, closest.N)
 
 	// Reflection
-	if depth < 2 {
-		reflect := line.New(closest.P, l.Direction.Norm().Reflect(closest.N.Norm()).Mul(1e-3))
+	if depth < 5 {
+		ref := l.Direction.Norm().Reflect(closest.N.Norm())
+		reflect := line.New(closest.P.Add(draw.ToPoint(ref.Mul(1e-3))), ref)
 		refCol := r.Trace(sc, depth+1, reflect)
 		refVec := vec.FromCol(refCol).Mul(0.3)
 		cVec := vec.FromCol(col).Mul(0.7)
@@ -66,29 +67,27 @@ func (ren *Renderer) Illuminate(sc *scene.Scene, depth int, sh shape.Shape, p *p
 	return color.NRGBA{uint8(math.Min(255, (specVal + rVal))), uint8(math.Min(255, (specVal + gVal))), uint8(math.Min(255, (specVal + bVal))), 255}
 }
 
-func (r *Renderer) Render(sc *scene.Scene) image.Image {
-	buffer := image.NewRGBA(image.Rect(0, 0, r.Width, r.Height))
-	cam := camera.New(r.Width, r.Height)
+func (ren *Renderer) Render(sc *scene.Scene) image.Image {
+	buffer := image.NewRGBA(image.Rect(0, 0, ren.Width, ren.Height))
+	cam := camera.New(ren.Width, ren.Height)
 
-	for i := 0; i < r.Width; i++ {
-		for j := 0; j < r.Height; j++ {
+	for i := 0; i < ren.Width; i++ {
+		for j := 0; j < ren.Height; j++ {
 			lines := cam.CastRay(i, j)
-			var col *color.NRGBA = nil
+			var (
+				r uint = 0
+				g uint = 0
+				b uint = 0
+			)
 			for _, l := range lines {
-				tmp := r.Trace(sc, 1, l)
-				if col == nil {
-					col = &tmp
-				} else {
-					// average colours
-					col = &color.NRGBA{
-						uint8((float64(col.R) + float64(tmp.R)) / 2),
-						uint8((float64(col.G) + float64(tmp.G)) / 2),
-						uint8((float64(col.B) + float64(tmp.B)) / 2),
-						255,
-					}
-				}
+				col := ren.Trace(sc, 1, l)
+				r += uint(col.R)
+				g += uint(col.G)
+				b += uint(col.B)
 			}
-			buffer.Set(i, j, col)
+
+			c := uint(len(lines))
+			buffer.Set(i, j, &color.NRGBA{uint8(r / c), uint8(g / c), uint8(b / c), 255})
 		}
 	}
 
